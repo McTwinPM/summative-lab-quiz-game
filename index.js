@@ -1,17 +1,25 @@
-console.log("Welcome to the Quiz App!");
 import { program } from 'commander';
+import { showMainMenu } from "./src/lib/quizlogic.js";
+import { gameState } from "./src/lib/quizstate.js";
 
 
 
-console.log('Welcome to the Quiz');
 
+(async () => {
+  await showMainMenu(gameState);
+  program.parse(process.argv);
+})();
 
-console.log('\n');
-console.log('Rules & Instructions: ');
-console.log('1. There are 10 Questions on India and all are Compulsory.');
-console.log('2. You will get 2 points on each Right Answer.');
-console.log('3. One Point will be deducted if the Answer is Wrong.');
-console.log('4. In MCQ based questions you have to type the Serial Number / Index Value.');
-console.log('\n');
+// export var questionList = [
 
-
+//   {
+//     array : ['Baldur\'s Gate 3', 'AstroBot', 'Blackmyth: Wukong', 'Spiderman 2'],
+//     question : 'Which game won game of the year in 2024? ',
+//     answer : 'AstroBot'
+//   },
+//   {
+//     array : ['Jumpman', 'Mr. Video Game', 'Mario Mario', 'Wario'],
+//     question : 'Which of these nicknames for Mario is not real? ',
+//     answer : 'Wario'
+//   },
+// ];
