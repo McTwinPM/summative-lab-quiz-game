@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { select } from '@inquirer/prompts'
 import { gameState } from "./quizstate.js";
+import { oneMinuteTimer } from './timer.js';
 
 
 
@@ -9,10 +10,10 @@ export async function showMainMenu(gameState) {
     console.log('Welcome to the Video Game Quiz');
     console.log('\n');
     console.log('Rules & Instructions: ');
-    console.log('1. There are 5 Video Game Questions .');
-    console.log('2. You will get 1 points on each Right Answer.');
-    console.log('3. You will have one minutes to answer all the questions.');
-    console.log('4. In MCQ based questions you have to type the Serial Number / Index Value.');
+    console.log('There are 5 Video Game Questions .');
+    console.log('You will get 1 points on each Right Answer.');
+    console.log('You will have one minutes to answer all the questions.');
+    console.log('Press Start Game to begin.');
     console.log('\n');
   const action = await select({
     message: "Main Menu",
@@ -40,13 +41,12 @@ var questionList = [
     answer : 'AstroBot'
   },
   {
-    array : ['Jumpman', 'Mr. Video Game', 'Mario Mario', 'Wario'],
+    array : ['Jumpman', 'Mr. Video Game', 'Mario Mario', 'Mr. Plumber'],
     question : 'Which of these nicknames for Mario is not real? ',
-    answer : 'Wario'
+    answer : 'Mr. Plumber'
   },
 ];
 
-let score = 0;
 async function quiz(listOfAnswers,question,answer){
   let userAnswer = await select({
     message: question,
@@ -58,24 +58,38 @@ async function quiz(listOfAnswers,question,answer){
   console.log('\n');
   if(userAnswer === answer){
     console.log(chalk.green('You are Right.'));
-    score = score + 1;
+    return true;
   } else{
     console.log(chalk.red('You are Wrong.'));
     console.log('The Correct Answer is: ',answer);
+    return false
   }
-
-  if(score < 0){
-    score = 0;
-  }
-  console.log('Score is: ',score);
 }
 
 
-for(var i = 0;i < questionList.length; i++){
-  console.log('\n');
-  await quiz(questionList[i].array,questionList[i].question,questionList[i].answer);
-  console.log('*******************************');
-}
+export async function startGame(gameState) {
+  let score = 0;
+  const quizPromise = (async () => {
+    for (let i = 0; i < questionList.length; i++) {
+      console.log('\n');
+      const correct = await quiz(
+        questionList[i].array,
+        questionList[i].question,
+        questionList[i].answer
+      );
+      if (correct) score++;
+      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      console.log('Score is: ', score);
+    }
+    return score;
+  })();
 
-// console.log('\n');
-// console.log('Congratulations, your Total Score is: ',score);
+  const result = await Promise.race([quizPromise, oneMinuteTimer()]);
+
+  if (result === 'timeout') {
+    console.log('\n' + chalk.red('Time is up!'));
+    console.log('Your score:', score);
+  } else {
+    console.log('\nCongratulations, your Total Score is:', result);
+  }
+}
