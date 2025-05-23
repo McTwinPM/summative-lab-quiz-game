@@ -1,6 +1,1 @@
-export const gameState = {
-    stats: {
-        correct: 0,
-    },
-    over: false,
-}
+export const gameState = {} // Container for the game state

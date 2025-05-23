@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import { select } from '@inquirer/prompts'
 import { gameState } from "./quizstate.js";
-import { oneMinuteTimer } from './timer.js';
+import { timer } from './timer.js';
 
 
 
@@ -11,8 +11,9 @@ export async function showMainMenu(gameState) {
     console.log('\n');
     console.log('Rules & Instructions: ');
     console.log('There are 5 Video Game Questions .');
-    console.log('You will get 1 points on each Right Answer.');
-    console.log('You will have one minutes to answer all the questions.');
+    console.log('You will get 1 point on each Right Answer.');
+    console.log('You will have one minute to answer all the questions.');
+    console.log('(The timer will cover option 4, but moving with the arrow keys will reveal option 4)')
     console.log('Press Start Game to begin.');
     console.log('\n');
   const action = await select({
@@ -42,9 +43,24 @@ var questionList = [
   },
   {
     array : ['Jumpman', 'Mr. Video Game', 'Mario Mario', 'Mr. Plumber'],
-    question : 'Which of these nicknames for Mario is not real? ',
+    question : 'Which of these options was not a nickname for Mario? ',
     answer : 'Mr. Plumber'
   },
+  {
+    array : ['Link', 'Zelda', 'Ganon', 'Tingle'],
+    question : 'Who is the usual main protagonist in the Legend of Zelda series? ',
+    answer : 'Link'
+  },
+  {
+    array : ['5', '24', '12', '10'],
+    question : 'How many mainline Mortal Kombat games are there? ',
+    answer : '12'
+  },
+  {
+    array : ['Runescape', 'Final Fantasy 14', 'EVE Online', 'World of Warcraft'],
+    question : 'What is the most popular MMORPG? ',
+    answer : 'World of Warcraft'
+  }
 ];
 
 async function quiz(listOfAnswers,question,answer){
@@ -78,13 +94,20 @@ export async function startGame(gameState) {
         questionList[i].answer
       );
       if (correct) score++;
-      console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      console.log('=============================================');
       console.log('Score is: ', score);
     }
     return score;
   })();
 
-  const result = await Promise.race([quizPromise, oneMinuteTimer()]);
+  const result = await Promise.race([
+    quizPromise,
+    timer((secondsLeft) => {
+      process.stdout.write(`\rTime left: ${secondsLeft}s   `);
+    }),
+  ]);
+
+  process.stdout.write('\n');
 
   if (result === 'timeout') {
     console.log('\n' + chalk.red('Time is up!'));
