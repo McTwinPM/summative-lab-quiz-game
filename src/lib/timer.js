@@ -1,4 +1,4 @@
-export function timer(onTick) {
+export function timer(onTick) { //Timer function, 
   let secondsLeft = 60;
   if (onTick) onTick(secondsLeft)
   const interval = setInterval(() => {

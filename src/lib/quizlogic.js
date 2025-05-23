@@ -5,7 +5,7 @@ import { timer } from './timer.js';
 
 
 
-
+//Displays the main menu (Start Game and Quit) and instructions
 export async function showMainMenu(gameState) {
     console.log('Welcome to the Video Game Quiz');
     console.log('\n');
@@ -62,7 +62,7 @@ var questionList = [
     answer : 'World of Warcraft'
   }
 ];
-
+// The quiz function - 
 async function quiz(listOfAnswers,question,answer){
   let userAnswer = await select({
     message: question,
@@ -82,7 +82,7 @@ async function quiz(listOfAnswers,question,answer){
   }
 }
 
-
+// Starts the game
 export async function startGame(gameState) {
   let score = 0;
   const quizPromise = (async () => {
