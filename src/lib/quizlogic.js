@@ -89,6 +89,7 @@ export async function startGame(gameState) {
   if (result === 'timeout') {
     console.log('\n' + chalk.red('Time is up!'));
     console.log('Your score:', score);
+    process.exit(0)
   } else {
     console.log('\nCongratulations, your Total Score is:', result);
   }
